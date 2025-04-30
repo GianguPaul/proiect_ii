@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
+import Register from './components/Register';
+import Login from './components/Login';
+
 
 const App = () =>{
   const [data,setData] = useState("");
@@ -31,6 +34,12 @@ const App = () =>{
     };
   
   return (
+    <div>
+    <h1>Auth System</h1>
+    <h2>Register</h2>
+    <Register />
+    <h2>Login</h2>
+    <Login />
     <div className="min-h-screen p-6 bg-gray-100">
     <h1 className="text-3xl font-bold mb-6">🍕 Restaurant Comenzi</h1>
 
@@ -72,6 +81,7 @@ const App = () =>{
         )}
       </div>
     </div>
+  </div>
   </div>
 );
 }
