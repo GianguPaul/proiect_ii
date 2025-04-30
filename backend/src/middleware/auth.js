@@ -1,4 +1,7 @@
 const jwt = require("jsonwebtoken");
+// src/routes/auth.js
+//const userService = require('../services/userService');
+
 module.exports = function (req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) 
