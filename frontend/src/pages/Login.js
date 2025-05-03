@@ -18,7 +18,7 @@ export default function Login({ onLogin }) {
       const msg =
         err.response?.data?.msg ||
         err.response?.data?.error ||
-        "Eroare necunoscută";
+        "Eroare necunoscută"  ;
       setError(msg);
       console.error("LOGIN ERROR DETAIL:", err.response?.data || err);
     }
