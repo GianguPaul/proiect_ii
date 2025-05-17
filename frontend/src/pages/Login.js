@@ -1,24 +1,25 @@
+// frontend/src/pages/Login.js
+
 import { useState } from "react";
-import api from "../services/api";
+import { login } from "../services/api";
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState("");
-  const [pw, setPw]     = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail]   = useState("");
+  const [pw, setPw]         = useState("");
+  const [error, setError]   = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
-    setError("");              // curăţăm mesajul anterior
+    setError("");
     try {
-      const { data } = await api.post("/auth/login", { email, password: pw });
+      const { data } = await login({ email, password: pw });
       localStorage.setItem("token", data.token);
       onLogin(data.user);
     } catch (err) {
-      // încercăm să preluăm mesajul fie din `msg`, fie din `error`, altfel fallback generic
       const msg =
         err.response?.data?.msg ||
         err.response?.data?.error ||
-        "Eroare necunoscută"  ;
+        "Eroare necunoscută";
       setError(msg);
       console.error("LOGIN ERROR DETAIL:", err.response?.data || err);
     }
