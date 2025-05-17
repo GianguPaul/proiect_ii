@@ -1,33 +1,31 @@
 // frontend/src/App.js
 import { useState, useEffect } from "react";
-import Login    from "./pages/Login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Menu     from "./pages/Menu";
-import Orders   from "./pages/Orders";
+import Menu from "./pages/Menu";
+import Orders from "./pages/Orders";
+import "./LoginRegister.css"; // fișierul CSS corect
 
 function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
+  const [tab, setTab] = useState("login");
 
   useEffect(() => {
-    // --- Restore user ---
     const rawUser = localStorage.getItem("user");
     if (rawUser && rawUser !== "undefined") {
       try {
         setUser(JSON.parse(rawUser));
-      } catch (e) {
-        console.warn("Could not parse stored user:", rawUser);
+      } catch {
         localStorage.removeItem("user");
       }
     }
 
-    // --- Restore cart ---
     const rawCart = localStorage.getItem("cart");
     if (rawCart && rawCart !== "undefined") {
       try {
         setCart(JSON.parse(rawCart));
-      } catch (e) {
-        console.warn("Could not parse stored cart:", rawCart);
+      } catch {
         localStorage.removeItem("cart");
       }
     }
@@ -46,11 +44,9 @@ function App() {
   };
 
   const handleAddToCart = (product) => {
-    setCart(prev => {
-      const next = [...prev, product];
-      localStorage.setItem("cart", JSON.stringify(next));
-      return next;
-    });
+    const next = [...cart, product];
+    setCart(next);
+    localStorage.setItem("cart", JSON.stringify(next));
   };
 
   const handleSetCart = (newCart) => {
@@ -58,17 +54,49 @@ function App() {
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
 
+  // Dacă nu este autentificat
   if (!user) {
     return (
-      <div style={{ padding: 20 }}>
-        <h1>Autentificare</h1>
-        <Login onLogin={handleLogin} />
-        <h2>Înregistrare</h2>
-        <Register />
+      <div className="single-card-wrapper">
+        <div className="logo-box">
+          <h1 style={{
+            fontSize: "32px",
+            margin: 0,
+            color: "#333",
+            fontWeight: "700",
+            textShadow: "0 1px 1px rgba(0,0,0,0.1)"
+          }}>
+            Orderly
+          </h1>
+        </div>
+
+        <div className="form-tab-card">
+          <div className="tabs">
+            <button
+              className={tab === "login" ? "active" : ""}
+              onClick={() => setTab("login")}
+            >
+              Login
+            </button>
+            <button
+              className={tab === "register" ? "active" : ""}
+              onClick={() => setTab("register")}
+            >
+              Register
+            </button>
+          </div>
+
+          {tab === "login" ? (
+            <Login onLogin={handleLogin} />
+          ) : (
+            <Register />
+          )}
+        </div>
       </div>
     );
   }
 
+  // Dacă utilizatorul este logat
   return (
     <div style={{ padding: 20 }}>
       <header style={{ marginBottom: 20 }}>

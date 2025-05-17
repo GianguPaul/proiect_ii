@@ -1,12 +1,11 @@
 // frontend/src/pages/Login.js
-
 import { useState } from "react";
 import { login } from "../services/api";
 
 export default function Login({ onLogin }) {
-  const [email, setEmail]   = useState("");
-  const [pw, setPw]         = useState("");
-  const [error, setError]   = useState("");
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [error, setError] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
@@ -21,13 +20,12 @@ export default function Login({ onLogin }) {
         err.response?.data?.error ||
         "Eroare necunoscută";
       setError(msg);
-      console.error("LOGIN ERROR DETAIL:", err.response?.data || err);
     }
   };
 
   return (
-    <form onSubmit={submit}>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <form onSubmit={submit} className="form-card">
+      {error && <p className="error-msg">{error}</p>}
       <input
         type="email"
         placeholder="Email"
