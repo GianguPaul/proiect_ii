@@ -1,4 +1,3 @@
-// backend/src/routes/orders.js
 
 const express    = require("express");
 const router     = express.Router();
@@ -22,7 +21,7 @@ router.get("/", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   try {
     const orders = await Order.getByUser(req.params.userId);
-    // atașăm items pentru fiecare comandă
+
     for (let o of orders) {
       o.items = await OrderItem.getByOrder(o.OrderId);
     }

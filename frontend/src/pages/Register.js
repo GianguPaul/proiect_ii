@@ -66,7 +66,7 @@ export default function Register() {
         onChange={e => setForm({ ...form, address: e.target.value })}
       />
 
-      {/* Dacă vrei să alegi rolul direct în UI, decomentează următorul bloc:
+      { 
       <select
         value={form.role}
         onChange={e => setForm({ ...form, role: e.target.value })}
@@ -75,7 +75,7 @@ export default function Register() {
         <option value="courier">Curier</option>
         <option value="admin">Admin</option>
       </select>
-      */}
+      }
 
       <button type="submit">Register</button>
     </form>
