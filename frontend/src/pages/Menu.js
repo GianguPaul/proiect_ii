@@ -1,5 +1,3 @@
-// frontend/src/pages/Menu.js
-
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
@@ -7,13 +5,22 @@ export default function Menu({ onAddToCart }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    api.get("/products")
+    api
+      .get("/products")
       .then(res => setProducts(res.data))
       .catch(err => console.error("Eroare la încărcare produse:", err));
   }, []);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: "20px",
+        padding: "0 20px"
+      }}
+    >
       {products.map(p => (
         <div
           key={p.ProductId}
@@ -40,9 +47,8 @@ export default function Menu({ onAddToCart }) {
               }}
             />
           )}
-
           <div style={{ flexGrow: 1 }}>
-            <h3 style={{ margin: "0 0 8px" }}>{p.Name}</h3>
+            <h3 style={{ margin: "0 0 8px", textAlign: "center" }}>{p.Name}</h3>
             <p style={{ margin: "0 0 8px", fontSize: "0.9em" }}>
               {p.Description}
             </p>
@@ -50,7 +56,6 @@ export default function Menu({ onAddToCart }) {
               {p.Price} lei
             </p>
           </div>
-
           <button
             onClick={() =>
               onAddToCart({
@@ -69,7 +74,8 @@ export default function Menu({ onAddToCart }) {
               cursor: p.IsAvailable ? "pointer" : "not-allowed",
               backgroundColor: p.IsAvailable ? "#007bff" : "#ccc",
               color: "#fff",
-              border: "none"
+              border: "none",
+              marginTop: 8
             }}
           >
             {p.IsAvailable ? "Adaugă în coș" : "Indisponibil"}

@@ -1,56 +1,47 @@
 // frontend/src/services/api.js
-
 import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:4000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" }
 });
 
-// Interceptor pentru JWT
-api.interceptors.request.use((config) => {
+// Adaugă automat token-ul JWT dacă există
+api.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// — Autentificare & Înregistrare —
-export const register = (data) =>
-  api.post("/auth/register", data);
+/** — Autentificare & Înregistrare — **/
+export const register    = data        => api.post("/auth/register", data);
+export const login       = credentials => api.post("/auth/login", credentials);
 
-export const login = (credentials) =>
-  api.post("/auth/login", credentials);
+/** — Users (admin) — **/
+export const getUsers     = ()      => api.get("/users");
+export const getUserById  = id      => api.get(`/users/${id}`);
+export const createUser   = data    => api.post("/users", data);
+export const updateUser   = (id, d) => api.put(`/users/${id}`, d);
+export const deleteUser   = id      => api.delete(`/users/${id}`);
 
-// — Users (admin only) —
-export const getUsers    = () => api.get("/users");
-export const getUserById = (id) => api.get(`/users/${id}`);
-export const createUser  = (data) => api.post("/users", data);
-export const updateUser  = (id, data) => api.put(`/users/${id}`, data);
-export const deleteUser  = (id) => api.delete(`/users/${id}`);
+/** — Produse — **/
+export const getProducts    = ()      => api.get("/products");
+export const getProductById = id      => api.get(`/products/${id}`);
+export const createProduct  = data    => api.post("/products", data);
+export const updateProduct  = (id, d) => api.put(`/products/${id}`, d);
+export const deleteProduct  = id      => api.delete(`/products/${id}`);
 
-// — Produse —
-export const getProducts    = () => api.get("/products");
-export const getProductById = (id) => api.get(`/products/${id}`);
-export const createProduct  = (data) => api.post("/products", data);
-export const updateProduct  = (id, data) => api.put(`/products/${id}`, data);
-export const deleteProduct  = (id) => api.delete(`/products/${id}`);
+/** — Comenzi — **/
+// client: propriile comenzi
+export const getOrdersByUser   = userId => api.get(`/orders/user/${userId}`);
+// admin/curier: toate comenzile
+export const getAllOrders      = ()      => api.get("/orders");
+// creare comandă
+export const createOrder       = order   => api.post("/orders", order);
+// actualizare status (PUT)
+export const updateOrderStatus = (id, st) => api.put(`/orders/${id}/status`, { status: st });
+// ștergere comandă
+export const deleteOrder       = id      => api.delete(`/orders/${id}`);
 
-// — Comenzi —
-// Pentru client: comenzi proprii
-export const getOrdersByUser   = (userId) => api.get(`/orders/user/${userId}`);
-// Pentru admin/curier: toate comenzile
-export const getAllOrders      = () => api.get("/orders");
-// Creează o comandă
-export const createOrder       = (order) => api.post("/orders", order);
-// Actualizează status (admin/curier)
-export const updateOrderStatus = (id, status) =>
-  api.put(`/orders/${id}/status`, { status });
-// Șterge o comandă
-export const deleteOrder       = (id) => api.delete(`/orders/${id}`);
-
-// Export default pentru cazuri particulare
+// fallback export
 export default api;
