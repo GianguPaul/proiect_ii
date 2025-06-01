@@ -1,0 +1,59 @@
+# Test Cases si Happy Flow
+
+## 1. Test Case-uri Detaliate
+
+| ID    | Functionalitate                         | Preconditii                        | Pasi                                                                                                              | Date de intrare                                                                                                    | Rezultat asteptat                                                   |
+|-------|-----------------------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| TC01  | Inregistrare utilizator valid           | Baza de date goala                 | 1. POST /api/auth/register<br>2. JSON cu toate campurile necesare                                                 | {"name":"Ana Popescu","email":"ana@example.com","password":"123456","phone":"0712345678","address":"Bucuresti"}       | 201 Created + JSON user{id,name,role,phone,address}                |
+| TC02  | Inregistrare cu email duplicat          | Exista utilizator cu acelasi email | 1. POST /api/auth/register<br>2. JSON cu email deja folosit                                                       | {"name":"Ana","email":"ana@example.com","password":"123456","phone":"0712345678","address":"Bucuresti"}               | 400 Bad Request + mesaj eroare "Email already in use"               |
+| TC03  | Autentificare cu credente corecte       | Utilizator inregistrat             | 1. POST /api/auth/login<br>2. JSON cu email si parola                                                             | {"email":"ana@example.com","password":"123456"}                                                                      | 200 OK + JWT token si date utilizator                              |
+| TC04  | Autentificare cu parola incorecta       | Utilizator inregistrat             | 1. POST /api/auth/login<br>2. JSON cu parola gresita                                                              | {"email":"ana@example.com","password":"wrongpass"}                                                                   | 401 Unauthorized + mesaj "Invalid credentials"                      |
+| TC05  | Acces ruta protejata fara token         | Fara header Authorization          | 1. GET /api/products                                                                                              | -                                                                                                                    | 401 Unauthorized + eroare "Token missing"                          |
+| TC06  | Vizualizare lista produse               | Cel putin 3 produse in BD           | 1. GET /api/products                                                                                              | -                                                                                                                    | 200 OK + array produse, minim 3 elemente                           |
+| TC07  | Creare produs nou (rol admin)           | Token admin valid                  | 1. POST /api/products cu header Authorization<br>2. JSON cu date produs                                           | {"name":"Cafea","description":"Cafea boabe","price":10.5,"category":"Bauturi","isAvailable":true,"imageUrl":""}       | 201 Created + JSON produs creat cu id si campuri corecte           |
+| TC18  | Creare produs fara token                | Fara header Authorization          | 1. POST /api/products                                                                                             | (date ca mai sus)                                                                                                     | 401 Unauthorized + eroare "Token missing"                          |
+| TC09  | Actualizare produs existent (admin)     | Token admin si id produs valid     | 1. PUT /api/products/{id}<br>2. JSON cu campuri actualizate                                                        | {"price":12.0,"isAvailable":false}                                                                                   | 200 OK + JSON produs actualizat                                     |
+| TC10  | Stergere produs (admin)                 | Token admin si id produs valid     | 1. DELETE /api/products/{id}                                                                                      | -                                                                                                                    | 204 No Content                                                     |
+| TC11  | Creare comanda valida                   | Client autentificat, produse in stoc| 1. POST /api/orders<br>2. JSON cu userId, items, total                                                            | {"userId":1,"items":[{"productId":5,"quantity":2}],"total":21.0}                                                      | 201 Created + JSON comanda si detalii items                        |
+| TC12  | Creare comanda cu stoc insuficient      | Client autentificat                | 1. POST /api/orders cu cantitate peste stoc                                                                       | {"userId":1,"items":[{"productId":5,"quantity":999}],"total":9990.0}                                                  | 400 Bad Request + mesaj "Insufficient stock"                       |
+| TC13  | Vizualizare comanda dupa id             | Comanda existenta                  | 1. GET /api/orders/{orderId}                                                                                      | -                                                                                                                    | 200 OK + JSON detalii comanda                                       |
+| TC14  | Actualizare status comanda (admin)      | Token admin si comanda existenta   | 1. PATCH /api/orders/{orderId}/status<br>2. JSON { "status":"shipped" }                                           | {"status":"shipped"}                                                                                                 | 200 OK + JSON comanda cu status actualizat                         |
+| TC15  | Stergere comanda (admin)                | Token admin si comanda existenta   | 1. DELETE /api/orders/{orderId}                                                                                   | -                                                                                                                    | 204 No Content                                                     |
+| TC16  | Cancelare comanda de catre client       | Token client si comanda in pending | 1. PATCH /api/orders/{orderId}/status<br>2. JSON { "status":"cancelled" }                                         | {"status":"cancelled"}                                                                                               | 200 OK + JSON comanda cu status "cancelled"                        |
+| TC17  | Re-inregistrare dupa stergere           | S-a sters contul utilizator        | 1. DELETE /api/auth/{userId}<br>2. POST /api/auth/register                                                        | {"name":"Ana Popescu","email":"ana@example.com","password":"123456","phone":"0712345678","address":"Bucuresti"}       | 201 Created + cont creat din nou                                    |
+
+## 2. Structura Test Suite
+
+1. Auth Suite  
+   - TC01, TC02, TC03, TC04, TC05  
+
+2. Products Suite  
+   - TC06, TC07, TC18, TC09, TC10  
+
+3. Orders Suite  
+   - TC11, TC12, TC13, TC14, TC15, TC16  
+
+4. Users Suite  
+   - TC17 si teste negative acces utilizator  
+
+## 3. Happy Flow
+
+1. Utilizator nou se inregistreaza (TC01)  
+2. Se autentifica (TC03)  
+3. Vizualizeaza lista de produse (TC06)  
+4. Client plaseaza comanda (TC11)  
+5. Client vizualizeaza detaliile comenzii (TC13)  
+
+## 4. Happy Flow extins
+
+1. Utilizator nou se inregistreaza (TC01)  
+2. Se autentifica (TC03)  
+3. Lista produse este afisata (TC06)  
+4. Admin se autentifica si adauga un produs (TC07)  
+5. Client adauga produs in cos si plaseaza comanda (TC11)  
+6. Client vizualizeaza comanda (TC13)  
+7. Admin actualizeaza statusul comenzii la "shipped" (TC14)  
+8. Client primeste statusul actualizat  
+9. Client decide sa anuleze comanda (TC16)  
+10. Client sterge contul (TC17)  
+11. Client se inregistreaza din nou cu acelasi email (TC02)  

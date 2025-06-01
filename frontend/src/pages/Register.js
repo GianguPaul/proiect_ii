@@ -75,7 +75,7 @@ export default function Register() {
       >
         <option value="client">Client</option>
         <option value="courier">Curier</option>
-        <option value="admin">Admin</option>
+        
       </select>
       <button type="submit">Register</button>
     </form>
